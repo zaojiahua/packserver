@@ -17,6 +17,9 @@ define('__SAN_WORK_PATH__', '/Users/san/frontend');
 /** 定义前端Python脚本所在的路径 */
 define('__PYTHON_SCRIPT_PATH__', __SAN_WORK_PATH__ . '/Game/san_slg/Script');
 
+/** 定义log文件路径，记录shell执行过程的log信息以及其他信息 */
+define('__SHELL_LOG_PATH__', '/log');
+
 /** 设置包含路径 */
 @set_include_path(get_include_path() . PATH_SEPARATOR .
 __TYPECHO_ROOT_DIR__ . '/var' . PATH_SEPARATOR .
