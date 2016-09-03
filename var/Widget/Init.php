@@ -51,7 +51,11 @@ class Widget_Init extends Typecho_Widget
         Typecho_Router::setPathInfo($pathInfo);
 
         /** 路由选择没有从数据库读取，在这里加入自定义的路由 */
-        Helper::addRoute('versionctrl', '/test1.php', 'Widget_SanVersionCtrl', 'getNewestVersion');
+        Helper::addRoute('newestversion', '/newestversion.php', 'Widget_SanVersionCtrl', 'getNewestVersion');
+        Helper::addRoute('currentversion', '/currentversion.php', 'Widget_SanVersionCtrl', 'getCurrentVersion');
+        Helper::addRoute('packlist', '/packlist.php', 'Widget_SanVersionCtrl', 'getPackedList');
+        Helper::addRoute('packCommand', '/packcommand.php', 'Widget_SanVersionCtrl', 'doPack');
+
 
         /** 初始化路由器 */
         Typecho_Router::setRoutes($options->routingTable);
@@ -75,6 +79,9 @@ class Widget_Init extends Typecho_Widget
         // if ($this->widget('Widget_User')->hasLogin()) {
         //     @session_start();
         // }
+
+        /** 开启session */
+        @session_start();
 
         // /** 监听缓冲区 */
         // ob_start();

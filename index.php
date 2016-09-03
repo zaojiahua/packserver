@@ -17,6 +17,12 @@ define('__SAN_WORK_PATH__', '/Users/san/frontend');
 /** 定义前端Python脚本所在的路径 */
 define('__PYTHON_SCRIPT_PATH__', __SAN_WORK_PATH__ . '/Game/san_slg/Script');
 
+/** 定义Android工程所在的路径 */
+define('__ANDROID_PROJ_PATH__', __SAN_WORK_PATH__ . '/Game/san_slg/proj.android-studio');
+
+/** 定义IOS工程所在的路径 */
+define('__IOS_PROJ_PATH__', __SAN_WORK_PATH__ . '/Game/san_slg/proj.ios_mac');
+
 /** 定义log文件路径，记录shell执行过程的log信息以及其他信息 */
 define('__SHELL_LOG_PATH__', '/log');
 
@@ -45,5 +51,3 @@ Typecho_Widget::widget('Widget_Init');
 
 /** 开始路由分发 */
 Typecho_Router::dispatch();
-
-echo "index.php";
