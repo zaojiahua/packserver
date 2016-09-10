@@ -51,11 +51,16 @@ class Widget_Init extends Typecho_Widget
         Typecho_Router::setPathInfo($pathInfo);
 
         /** 路由选择没有从数据库读取，在这里加入自定义的路由 */
-        Helper::addRoute('newestversion', '/newestversion.php', 'Widget_SanVersionCtrl', 'getNewestVersion');
-        Helper::addRoute('currentversion', '/currentversion.php', 'Widget_SanVersionCtrl', 'getCurrentVersion');
-        Helper::addRoute('packlist', '/packlist.php', 'Widget_SanVersionCtrl', 'getPackedList');
-        Helper::addRoute('packCommand', '/packcommand.php', 'Widget_SanVersionCtrl', 'doPack');
+        Helper::addRoute('api/packlist', '/api/packlist', 'Widget_SanVersionCtrl', 'getPackedList');
+        Helper::addRoute('api/curversion', '/api/curversion', 'Widget_SanVersionCtrl', 'getCurrentVersion');
+        Helper::addRoute('api/dopack', '/api/doPack', 'Widget_SanVersionCtrl', 'doPack');
+        Helper::addRoute('api/getpacktype', '/api/getpacktype', 'Widget_SanVersionCtrl', 'getPackType');
+        Helper::addRoute('api/getpackageurl', '/api/getpackageurl', 'Widget_SanVersionCtrl', 'getPackageUrl');
 
+        Helper::addRoute('index', '/', 'Widget_SanVersionCtrl', 'render');
+        Helper::addRoute('svnup', '/svnup.php', 'Widget_SanVersionCtrl', 'render');
+        Helper::addRoute('packlist', '/packlist.php', 'Widget_SanVersionCtrl', 'render');
+        Helper::addRoute('packCommand', '/packcommand.php', 'Widget_SanVersionCtrl', 'render');
 
         /** 初始化路由器 */
         Typecho_Router::setRoutes($options->routingTable);
