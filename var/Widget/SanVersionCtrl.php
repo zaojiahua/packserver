@@ -36,6 +36,12 @@ class Widget_SanVersionCtrl extends Typecho_Widget
 	 */
 	private $autoBuildScript = "";
 
+	/**
+	 * 记录打包时候的时间戳
+	 * @var string
+	 */
+	private $packTime = "";
+
 	public function __construct($request, $response, $params = NULL)
 	{
 		parent::__construct($request, $response, $params);
@@ -45,6 +51,7 @@ class Widget_SanVersionCtrl extends Typecho_Widget
 		$this->absLogFileName = __SHELL_LOG_PATH__ . "/{$date}.txt";
 		$this->logFileName = __TYPECHO_ROOT_DIR__ . __SHELL_LOG_PATH__ . "/{$date}.txt";
 		$this->autoBuildScript = __TYPECHO_ROOT_DIR__ . '/' . __TYPECHO_TOOLS_DIR__ . '/auto_build.py';
+		$this->packTime = $date;
 	}
 
 	/**
@@ -136,12 +143,11 @@ class Widget_SanVersionCtrl extends Typecho_Widget
 	 */
 	public function getNewestVersion()
 	{
-		if(!isset($_SESSION['currentVersion']))
+		if($this->isBusy())
 		{
-			header('Location: index.php');
-			exit;
+			$_SESSION['newstVersion'] = $_SESSION['currentVersion'];
+			return $_SESSION['currentVersion'];
 		}
-
 		/** 不更新仓库 */
 		$this->newstVersion = $this->updateVersion(false);
 		$_SESSION['newstVersion'] = $this->newstVersion;
@@ -358,28 +364,36 @@ class Widget_SanVersionCtrl extends Typecho_Widget
 
 	public function getPackParams()
 	{
+		$logFileName = $_SESSION['logFile'];
 		$packParams = $_SESSION['packParams'];
 		$packCommand = $packParams['packCommand'];
 		$packType = $packParams['packType'];
 		$packVersion = $packParams['packVersion'];
 		$packMinVersion = $packParams['packMinVersion'];
+		$packQuality = "";
 		if("etc" == $packType)
 		{
 			$packTarget = "android";
+			// Q = ' -s fast'
+			// Q = ' -s slow'
+			$packQuality = "-s slow";
 		}
 		elseif("pvr" == $packType)
 		{
 			$packTarget = "ios";
+			// Q = ' -q pvrtcfastest'
+			// Q = ' -q pvrtcbest'
+			$packQuality = "-q pvrtcbest";
 		}
 
 		$busyFileName = __BUSY_FILE__;
 		if($packCommand == 'incremental')
 		{
-			return "-m $packType -v $packVersion $packMinVersion -t incremental -d $busyFileName";
+			return "-m $packType -v $packVersion $packMinVersion -t incremental -time $this->packTime -quality $packQuality -d $busyFileName";
 		}
 		elseif($packCommand == 'whole')
 		{
-			return "-c $packTarget -m $packType -v $packVersion $packMinVersion -d $busyFileName";
+			return "-c $packTarget -m $packType -v $packVersion $packMinVersion -time $this->packTime -quality $packQuality -d $busyFileName";
 		}
 	}
 
@@ -419,11 +433,11 @@ class Widget_SanVersionCtrl extends Typecho_Widget
 		$pathInfo = $this->request->getPathInfo();
 
 		/** 如何系统忙 则等待 */
-		if($this->isBusy() && '/' != $pathInfo)
-		{
-			echo '<script>alert("打包系统忙!"); window.location.href = "/";</script>';
-			exit;
-		}
+		// if($this->isBusy() && '/' != $pathInfo)
+		// {
+		// 	echo '<script>alert("打包系统忙!"); window.location.href = "/";</script>';
+		// 	exit;
+		// }
 
 		if('/' == $pathInfo)
 		{
@@ -432,13 +446,27 @@ class Widget_SanVersionCtrl extends Typecho_Widget
 		elseif('/svnup.php' == $pathInfo)
 		{
 			$themeFile = '/svnup.php';
+			if($this->isBusy())
+			{
+				$themeFile = '/packlist.php';
+			}
 		}
 		elseif('/packlist.php' == $pathInfo)
 		{
+			if(!isset($_SESSION['currentVersion']))
+			{
+				header('Location: index.php');
+				exit;
+			}
 			$themeFile = '/packlist.php';
 		}
 		elseif('/packcommand.php' == $pathInfo)
 		{
+			if($this->isBusy())
+			{
+				echo '<script>alert("打包系统忙!"); window.location.href = "/";</script>';
+				exit;
+			}
 			if(true == $this->parsePackParams())
 			{
 				$themeFile = '/packcommand.php';

@@ -6,6 +6,13 @@ import os
 import sys
 from file_utils import *
 
+# # 定义本地热更新目录
+# LOCAL_UPDATE_PATH = "/Users/san/packserver/bin/Update_server_"
+# # 定义内网热跟新目录
+# INTRANET_UPDATE_PATN = "10.241.107.31:/app/frontPack/intratest/"
+# # 定义外网热更新目录
+# EXTRANET_UPDATE_PATH = "10.241.107.31:/"
+
 # 添加环境变量 这里主要针对外部进程调用Python语言 Python的环境变量继承了父进程
 NDK_PATH = "/Users/san/enviroment/sdk/ndk-bundle"
 NDK_MODULE_PATH = "/Users/san/frontend/cocos2d/cocos:/Users/san/frontend/cocos2d/external:/Users/san/frontend/cocos2d"
@@ -25,6 +32,21 @@ for params in sys.argv[1:]:
 	packParams = packParams + " " + params
 
 os.system("python %s" % packParams)
+
+# 将热更新文件上传到服务器
+# if "-time" in sys.argv:
+# 	PACK_TIME = sys.argv[sys.argv.index("-time") + 1]
+# 	if "-v" in sys.argv:
+# 		PACK_VERSION = sys.argv[sys.argv.index("-v") + 1]
+# 		PACK_NAME = PACK_VERSION + "_" + PACK_TIME + ".zip"
+# 	if "-m" in sys.argv:
+# 		if "etc" in sys.argv:
+# 			LOCAL_UPDATE_FILE = LOCAL_UPDATE_PATH + "etc" + "/" + PACK_NAME
+# 		elif "pvr" in sys.argv:
+# 			LOCAL_UPDATE_FILE = LOCAL_UPDATE_PATH + "pvr" + "/" + PACK_NAME
+# 	uploadCommand = "scp %s root@%s" % (LOCAL_UPDATE_FILE, INTRANET_UPDATE_PATN)
+# 	os.system(uploadCommand)
+		
 
 # 删除某一个文件
 if "-d" in sys.argv:
